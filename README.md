@@ -8,8 +8,8 @@
     使用swift语言编写
     基于iOS平台
 
-![github](http://l.ypw.hk/upload/1426748140.png "预览图")
-![github](http://l.ypw.hk/upload/1426748177.png "预览图")
+![github](/screen/1426748140.png "预览图")
+![github](/screen/1426748177.png "预览图")
 
 数据例子:
 
