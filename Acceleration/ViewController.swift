@@ -25,45 +25,50 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.delegate=self
         locationManager.requestAlwaysAuthorization()
+        if #available(iOS 9.0, *) {
+            locationManager.allowsBackgroundLocationUpdates = true
+        } else {
+            // Fallback on earlier versions
+        }
 
         if motionManager.accelerometerAvailable {
             motionManager.accelerometerUpdateInterval = speed
             motionManager.startAccelerometerUpdates()
-            println("开始加速度检测")
+            print("开始加速度检测")
         }else {
             UIAlertView(title: "提示", message: "不支持加速度的设备", delegate: nil, cancelButtonTitle: "确定").show()
-            println("不支持加速度的设备")
+            print("不支持加速度的设备")
         }
         
         if motionManager.gyroAvailable {
             motionManager.gyroUpdateInterval = speed
             motionManager.startGyroUpdates()
-            println("开始角速度检测")
+            print("开始角速度检测")
         }else {
             UIAlertView(title: "提示", message: "不支持陀螺仪的设备", delegate: nil, cancelButtonTitle: "确定").show()
-            println("不支持陀螺仪的设备")
+            print("不支持陀螺仪的设备")
         }
         
         if motionManager.magnetometerAvailable {
             motionManager.magnetometerUpdateInterval = speed
             motionManager.startMagnetometerUpdates()
-            println("开始磁场检测")
+            print("开始磁场检测")
         }else {
             UIAlertView(title: "提示", message: "不支持磁场的设备", delegate: nil, cancelButtonTitle: "确定").show()
-            println("不支持磁场的设备")
+            print("不支持磁场的设备")
         }
         
         if motionManager.deviceMotionAvailable {
             motionManager.deviceMotionUpdateInterval = speed
             motionManager.startDeviceMotionUpdates()
-            println("开始方向检测")
+            print("开始方向检测")
         }else {
             UIAlertView(title: "提示", message: "不支持方向的设备", delegate: nil, cancelButtonTitle: "确定").show()
-            println("不支持方向的设备")
+            print("不支持方向的设备")
         }
         
         if self.view.bounds.size.width != 768 {
-            println("iphone")
+            print("iphone")
             scroll.contentSize=CGSize(width: 320, height: 1300)
         }
         
@@ -111,7 +116,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
     
     @IBAction func logswitch(sender: AnyObject) {
         if wirteswitch.on {
-        locationManager.startUpdatingLocation()
+            locationManager.startUpdatingLocation()
         }else {
             locationManager.stopUpdatingLocation()
         }
@@ -131,7 +136,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
             cos=sqrt((x*x+z*z)/(x*x+y*y+z*z))
             theta=acos(cos)/3.1415926*180
             write("acc,\(x),\(y),\(z)")
-            show+=NSString(format: "加速度\nx=%.2f\ny=%.2f\nz=%.2f\nθ=%.2f", x,y,z,theta)
+            show+=NSString(format: "加速度\nx=%.2f\ny=%.2f\nz=%.2f\nθ=%.2f", x,y,z,theta) as String
             if theta<1 {
                 show+="\t\t水平放置"
             }else if theta>85 {
@@ -146,7 +151,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
             if Float.abs(y)>max {max=Float.abs(y)}
             if Float.abs(z)>max {max=Float.abs(z)}
             
-            show+=NSString(format: "\n\n陀螺仪\nx=%.2f\ny=%.2f\nz=%.2f", x,y,z)
+            show+=NSString(format: "\n\n陀螺仪\nx=%.2f\ny=%.2f\nz=%.2f", x,y,z) as String
             if max>0.5 {
                 show+="\t\t正在转动"
             }
@@ -181,13 +186,13 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
             magx.value=Float(x)
             magy.value=Float(y)
             magz.value=Float(z)
-            show+=NSString(format: "\n\n磁场\nx=%.2f\ny=%.2f\nz=%.2f\n", x,y,z)
+            show+=NSString(format: "\n\n磁场\nx=%.2f\ny=%.2f\nz=%.2f\n", x,y,z) as String
             write("mag,\(x),\(y),\(z)")
             if max>1000 {
                 show+="检测到磁铁或磁贴"
             }
         }
-        if let d = motionManager.deviceMotion.attitude{
+        if let d = motionManager.deviceMotion?.attitude{
             x = Float(d.roll)
             y = Float(d.pitch)
             z = Float(d.yaw)
@@ -211,7 +216,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
             oriy.value = Float(y)
             oriz.value = Float(z)
             
-            show+=NSString(format: "\n\n欧拉角\nrow=%.2f\npitch=%.2f\nyaw=%.2f", x,y,z)
+            show+=NSString(format: "\n\n欧拉角\nrow=%.2f\npitch=%.2f\nyaw=%.2f", x,y,z) as String
 
             write("ori,\(x),\(y),\(z)")
         }
@@ -221,20 +226,20 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
     
     @IBOutlet weak var showtext: UITextView!
 
-    func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
-        var location:CLLocation = locations[locations.count-1] as CLLocation
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let location:CLLocation = locations[locations.count-1] 
         if(location.horizontalAccuracy>0){
             let gps="GPS信息:\n经度:\(location.coordinate.latitude)\n纬度:\(location.coordinate.longitude)"
             gpstext.text=gps
             write("gps,\(location.coordinate.latitude),\(location.coordinate.longitude)")
-            println(gps)
+            print(gps)
         }
     }
 
     @IBAction func share(sender: AnyObject) {
-        var url = NSURL(string: "file://"+dir)
-        println(url)
-        var controler = UIActivityViewController(activityItems: [url!], applicationActivities: nil)
+        let url = NSURL(string: "file://"+dir)
+        print(url)
+        let controler = UIActivityViewController(activityItems: [url!], applicationActivities: nil)
         presentViewController(controler, animated: true, completion: nil)
         if controler.respondsToSelector("popoverPresentationController") {
             let presentationController = controler.popoverPresentationController
@@ -264,26 +269,34 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
     
     func write(s:String){
         if wirteswitch.on {
-            var s2="\(getTime()),\(s)\n"
+            let s2="\(getTime()),\(s)\n"
             file.seekToEndOfFile()
             file.writeData(s2.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!)
             getsize()
-            println(s2+",")
+            print(s2)
         }
     }
     
     
     func getsize(){
         if filemanager.fileExistsAtPath(dir){
-            var s = filemanager.attributesOfItemAtPath(dir, error: nil)!
-            var sz = Int(s["NSFileSize"] as Int)
-            if sz<1048576{
-                filesize.text=NSString(format: "%.3fKB", Double(sz)/1024.0)
-            }else {
-                filesize.text=NSString(format: "%.3fMB", Double(sz)/1048576.0)
+            do{
+                var s = try filemanager.attributesOfItemAtPath(dir)
+                let sz = Int(s["NSFileSize"] as! Int)
+                if sz<1048576{
+                    filesize.text=NSString(format: "%.3fKB", Double(sz)/1024.0) as String
+                }else {
+                    filesize.text=NSString(format: "%.3fMB", Double(sz)/1048576.0) as String
+                }
+            }catch{
+                print("创建文件失败")
             }
         }else {
-            "".writeToFile(dir, atomically: true, encoding: NSUTF8StringEncoding, error: nil)
+            do{
+                try "".writeToFile(dir, atomically: true, encoding: NSUTF8StringEncoding)
+            }catch{
+                
+            }
         }
     }
     
@@ -292,7 +305,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
     }
     
     func getTime() -> String{
-        var timespan = NSDate().timeIntervalSince1970*1000
+        let timespan = NSDate().timeIntervalSince1970*1000
         return "\(Int64(timespan))"
     }
 

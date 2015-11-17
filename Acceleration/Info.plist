@@ -4,18 +4,10 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>zh_CN</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>location</string>
-	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
-	<key>NSLocationUsageDescription</key>
-	<string>我们需要访问您的地理位置信息</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>我们需要访问您的地理位置信息</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.instabtbu.$(PRODUCT_NAME:rfc1034identifier)</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -30,6 +22,18 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>我们需要访问您的地理位置信息</string>
+	<key>NSLocationUsageDescription</key>
+	<string>我们需要访问您的地理位置信息</string>
+	<key>NSMotionUsageDescription</key>
+	<string>我们需要访问您的传感器信息</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>location</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
