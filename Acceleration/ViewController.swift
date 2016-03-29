@@ -110,7 +110,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
         if timer != nil {
             timer?.invalidate()
         }
-        timer=NSTimer.scheduledTimerWithTimeInterval(speed, target: self, selector: "refresh", userInfo: nil, repeats: true)
+        timer=NSTimer.scheduledTimerWithTimeInterval(speed, target: self, selector: #selector(ViewController.refresh), userInfo: nil, repeats: true)
         speedlabel.text="数据采集间隔:\(Int(speed*1000))毫秒,记录速度:\(Int(4.7/speed))KB/min"
     }
     
@@ -241,7 +241,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
         print(url)
         let controler = UIActivityViewController(activityItems: [url!], applicationActivities: nil)
         presentViewController(controler, animated: true, completion: nil)
-        if controler.respondsToSelector("popoverPresentationController") {
+        if controler.respondsToSelector(Selector("popoverPresentationController")) {
             let presentationController = controler.popoverPresentationController
             presentationController?.sourceView = sharebutton
         }
