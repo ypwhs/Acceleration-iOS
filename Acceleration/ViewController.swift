@@ -16,7 +16,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
     let motionManager = CMMotionManager()
     var timer:Timer?
     var speed = 0.01
-    var path = NSHomeDirectory()+"/Documents/out.txt"
+    var path = NSHomeDirectory()+"/Documents/out.csv"
     var file=FileHandle()
     var filemanager=FileManager()
     override func viewDidLoad() {
@@ -38,6 +38,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
         }else {
             UIAlertView(title: "提示", message: "不支持加速度的设备", delegate: nil, cancelButtonTitle: "确定").show()
             print("不支持加速度的设备")
+            return;
         }
         
         if motionManager.isGyroAvailable {
