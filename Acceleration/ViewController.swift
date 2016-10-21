@@ -14,11 +14,11 @@ import MapKit
 class ViewController: UIViewController,CLLocationManagerDelegate{
     let locationManager = CLLocationManager()
     let motionManager = CMMotionManager()
-    var timer:NSTimer?
+    var timer:Timer?
     var speed = 0.01
-    var dir = NSHomeDirectory()+"/Documents/out.txt"
-    var file=NSFileHandle()
-    var filemanager=NSFileManager()
+    var path = NSHomeDirectory()+"/Documents/out.txt"
+    var file=FileHandle()
+    var filemanager=FileManager()
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -31,7 +31,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
             // Fallback on earlier versions
         }
 
-        if motionManager.accelerometerAvailable {
+        if motionManager.isAccelerometerAvailable {
             motionManager.accelerometerUpdateInterval = speed
             motionManager.startAccelerometerUpdates()
             print("开始加速度检测")
@@ -40,7 +40,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
             print("不支持加速度的设备")
         }
         
-        if motionManager.gyroAvailable {
+        if motionManager.isGyroAvailable {
             motionManager.gyroUpdateInterval = speed
             motionManager.startGyroUpdates()
             print("开始角速度检测")
@@ -49,7 +49,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
             print("不支持陀螺仪的设备")
         }
         
-        if motionManager.magnetometerAvailable {
+        if motionManager.isMagnetometerAvailable {
             motionManager.magnetometerUpdateInterval = speed
             motionManager.startMagnetometerUpdates()
             print("开始磁场检测")
@@ -58,7 +58,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
             print("不支持磁场的设备")
         }
         
-        if motionManager.deviceMotionAvailable {
+        if motionManager.isDeviceMotionAvailable {
             motionManager.deviceMotionUpdateInterval = speed
             motionManager.startDeviceMotionUpdates()
             print("开始方向检测")
@@ -74,15 +74,15 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
         
         
         getsize()
-        file = NSFileHandle(forUpdatingAtPath: dir)!
-        let de = NSUserDefaults(suiteName: "speed")
-        let spd = de!.floatForKey("speed")
+        file = FileHandle(forUpdatingAtPath: path)!
+        let de = UserDefaults(suiteName: "speed")
+        let spd = de!.float(forKey: "speed")
         if spd != 0 {
             speedslider.value = spd
         }else {
             speedslider.value=0
         }
-        sliderchange(0)
+        sliderchange(0 as AnyObject)
     }
     
     @IBOutlet var scroll: UIScrollView!
@@ -110,12 +110,12 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
         if timer != nil {
             timer?.invalidate()
         }
-        timer=NSTimer.scheduledTimerWithTimeInterval(speed, target: self, selector: #selector(ViewController.refresh), userInfo: nil, repeats: true)
+        timer=Timer.scheduledTimer(timeInterval: speed, target: self, selector: #selector(ViewController.refresh), userInfo: nil, repeats: true)
         speedlabel.text="数据采集间隔:\(Int(speed*1000))毫秒,记录速度:\(Int(4.7/speed))KB/min"
     }
     
-    @IBAction func logswitch(sender: AnyObject) {
-        if wirteswitch.on {
+    @IBAction func logswitch(_ sender: AnyObject) {
+        if wirteswitch.isOn {
             locationManager.startUpdatingLocation()
         }else {
             locationManager.stopUpdatingLocation()
@@ -147,9 +147,9 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
             x = Float(g.rotationRate.x)
             y = Float(g.rotationRate.y)
             z = Float(g.rotationRate.z)
-            max=Float.abs(x)
-            if Float.abs(y)>max {max=Float.abs(y)}
-            if Float.abs(z)>max {max=Float.abs(z)}
+            max=abs(x)
+            if abs(y)>max {max=abs(y)}
+            if abs(z)>max {max=abs(z)}
             
             show+=NSString(format: "\n\n陀螺仪\nx=%.2f\ny=%.2f\nz=%.2f", x,y,z) as String
             if max>0.5 {
@@ -173,9 +173,9 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
             y = Float(m.magneticField.y)
             z = Float(m.magneticField.z)
 
-            max=Float.abs(x)
-            if Float.abs(y)>max {max=Float.abs(y)}
-            if Float.abs(z)>max {max=Float.abs(z)}
+            max=abs(x)
+            if abs(y)>max {max=abs(y)}
+            if abs(z)>max {max=abs(z)}
             if max<300 {max=300}
             magx.maximumValue=max
             magy.maximumValue=max
@@ -201,9 +201,9 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
             y=y/3.1415926*180
             z=z/3.1415926*180
             
-            max=Float.abs(x)
-            if Float.abs(y)>max {max=Float.abs(y)}
-            if Float.abs(z)>max {max=Float.abs(z)}
+            max=abs(x)
+            if abs(y)>max {max=abs(y)}
+            if abs(z)>max {max=abs(z)}
             if max<90 {max=90}
             orix.maximumValue=max
             oriy.maximumValue=max
@@ -226,7 +226,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
     
     @IBOutlet weak var showtext: UITextView!
 
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location:CLLocation = locations[locations.count-1] 
         if(location.horizontalAccuracy>0){
             let gps="GPS信息:\n经度:\(location.coordinate.latitude)\n纬度:\(location.coordinate.longitude)"
@@ -236,12 +236,12 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
         }
     }
 
-    @IBAction func share(sender: AnyObject) {
-        let url = NSURL(string: "file://"+dir)
+    @IBAction func share(_ sender: AnyObject) {
+        let url = URL(string: "file://"+path)
         print(url)
         let controler = UIActivityViewController(activityItems: [url!], applicationActivities: nil)
-        presentViewController(controler, animated: true, completion: nil)
-        if controler.respondsToSelector(Selector("popoverPresentationController")) {
+        present(controler, animated: true, completion: nil)
+        if controler.responds(to: #selector(getter: UIViewController.popoverPresentationController)) {
             let presentationController = controler.popoverPresentationController
             presentationController?.sourceView = sharebutton
         }
@@ -255,23 +255,23 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
     @IBOutlet var sharebutton: UIButton!
     
     
-    @IBAction func clear(sender: AnyObject) {
-        file.truncateFileAtOffset(0)
+    @IBAction func clear(_ sender: AnyObject) {
+        file.truncateFile(atOffset: 0)
         getsize()
     }
     
-    @IBAction func sliderchange(sender: AnyObject) {
-        let de = NSUserDefaults(suiteName: "speed")
+    @IBAction func sliderchange(_ sender: AnyObject) {
+        let de = UserDefaults(suiteName: "speed")
         speed=(5+exp(Double(speedslider.value)))/1000.0
-        de!.setFloat(speedslider.value, forKey: "speed")
+        de!.set(speedslider.value, forKey: "speed")
         setspeed()
     }
     
-    func write(s:String){
-        if wirteswitch.on {
+    func write(_ s:String){
+        if wirteswitch.isOn {
             let s2="\(getTime()),\(s)\n"
             file.seekToEndOfFile()
-            file.writeData(s2.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!)
+            file.write(s2.data(using: String.Encoding.utf8, allowLossyConversion: true)!)
             getsize()
             print(s2)
         }
@@ -279,33 +279,24 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
     
     
     func getsize(){
-        if filemanager.fileExistsAtPath(dir){
-            do{
-                var s = try filemanager.attributesOfItemAtPath(dir)
-                let sz = Int(s["NSFileSize"] as! Int)
-                if sz<1048576{
-                    filesize.text=NSString(format: "%.3fKB", Double(sz)/1024.0) as String
-                }else {
-                    filesize.text=NSString(format: "%.3fMB", Double(sz)/1048576.0) as String
-                }
-            }catch{
-                print("创建文件失败")
+        do{
+            let fileSize = try (FileManager.default.attributesOfItem(atPath: path)[FileAttributeKey.size] as! NSNumber).uint64Value
+            if fileSize < 1048576{
+                filesize.text=NSString(format: "%.3fKB", Double(fileSize)/1024.0) as String
+            }else {
+                filesize.text=NSString(format: "%.3fMB", Double(fileSize)/1048576.0) as String
             }
-        }else {
-            do{
-                try "".writeToFile(dir, atomically: true, encoding: NSUTF8StringEncoding)
-            }catch{
-                
-            }
+        }catch {
+            try! "".write(toFile: path, atomically: true, encoding: String.Encoding.utf8)
         }
     }
     
-    @IBAction func map(sender: AnyObject) {
+    @IBAction func map(_ sender: AnyObject) {
         locationManager.stopUpdatingLocation()
     }
     
     func getTime() -> String{
-        let timespan = NSDate().timeIntervalSince1970*1000
+        let timespan = Date().timeIntervalSince1970*1000
         return "\(Int64(timespan))"
     }
 

@@ -22,7 +22,7 @@ class MapViewController: UIViewController,CLLocationManagerDelegate{
         locationManager.startUpdatingLocation()
     }
     
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location = locationManager.location
         let theSpan=MKCoordinateSpan(latitudeDelta: 0.001, longitudeDelta: 0.001)
         let theRegion = MKCoordinateRegion(center: location!.coordinate, span: theSpan)
@@ -30,8 +30,8 @@ class MapViewController: UIViewController,CLLocationManagerDelegate{
         locationManager.stopUpdatingLocation()
     }
     
-    @IBAction func back(sender: AnyObject) {
-        dismissViewControllerAnimated(true) { () -> Void in
+    @IBAction func back(_ sender: AnyObject) {
+        dismiss(animated: true) { () -> Void in
         }
     }
 }
