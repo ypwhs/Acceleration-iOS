@@ -21,7 +21,6 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
     var filemanager=FileManager()
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.delegate=self
         locationManager.requestAlwaysAuthorization()
@@ -72,7 +71,6 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
             print("iphone")
             scroll.contentSize=CGSize(width: 320, height: 1300)
         }
-        
         
         getsize()
         file = FileHandle(forUpdatingAtPath: path)!
