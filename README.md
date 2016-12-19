@@ -5,8 +5,8 @@
     使用个app，你可以直观地看到加速度、角速度、磁场强度、GPS 坐标以及欧拉角的原始数据。你还可以记录数据（CSV 格式），通过 AirDrop 发送到电脑上，并进一步分析它们。
     使用swift语言编写，可以运行在 iPhone 和 iPad 上。
 
-![github](/screen/1426748140.png "预览图")
-![github](/screen/1426748177.png "预览图")
+![github](screen/1426748140.png "预览图")
+![github](screen/1426748177.png "预览图")
 
 数据片段:
 
