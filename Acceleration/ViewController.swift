@@ -237,7 +237,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate{
 
     @IBAction func share(_ sender: AnyObject) {
         let url = URL(string: "file://"+path)
-        print(url)
+        print(url!)
         let controler = UIActivityViewController(activityItems: [url!], applicationActivities: nil)
         present(controler, animated: true, completion: nil)
         if controler.responds(to: #selector(getter: UIViewController.popoverPresentationController)) {
